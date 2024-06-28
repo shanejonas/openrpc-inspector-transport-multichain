@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/shanejonas/openrpc-inspector-transport-multichain/compare/1.0.0...1.0.1) (2024-06-28)
+
+
+### Bug Fixes
+
+*  update package.json ([019081c](https://github.com/shanejonas/openrpc-inspector-transport-multichain/commit/019081c34448c6586ec408dcbbab4eb00cca9eeb))
+
 # 1.0.0 (2024-06-28)
 
 
