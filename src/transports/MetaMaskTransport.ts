@@ -1,17 +1,10 @@
 import { Transport } from "@open-rpc/client-js/build/transports/Transport";
-import { EventEmitter } from "events";
-import { JSONRPCRequestData, IJSONRPCData, getBatchRequests, getNotifications } from "@open-rpc/client-js/build/Request";
+import { JSONRPCRequestData, getBatchRequests, getNotifications } from "@open-rpc/client-js/build/Request";
 import { JSONRPCError } from "@open-rpc/client-js";
 import { ERR_UNKNOWN } from "@open-rpc/client-js/build/Error";
 
-
-declare global {
-  interface Chrome {
-    chrome?: any;
-  }
-}
-
 const EXTENSION_ID = 'nonfpcflonapegmnfeafnddgdniflbnk';
+
 class MetaMaskTransport extends Transport {
 
   private extensionPort?: chrome.runtime.Port;
@@ -22,7 +15,11 @@ class MetaMaskTransport extends Transport {
   }
 
   public async connect(): Promise<boolean> {
-    this.extensionPort = chrome.runtime.connect(EXTENSION_ID)
+    this.extensionPort = this.extensionPort || chrome.runtime.connect(EXTENSION_ID);
+    this.extensionPort.onDisconnect.addListener(() => {
+      this.extensionPort?.onMessage.removeListener(this.onMessageListener);
+      this.extensionPort = undefined;
+    });
     this.extensionPort.onMessage.addListener(this.onMessageListener);
     return true;
   }
