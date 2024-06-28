@@ -10,7 +10,6 @@ class MetaMaskTransport extends Transport {
 
   private onMessageListener(msg: any) {
     const { data } = msg;
-    console.log('onMessageListener', data)
     this.transportRequestManager.resolveResponse(JSON.stringify(data));
   }
 
@@ -40,7 +39,6 @@ class MetaMaskTransport extends Transport {
     const r = {...data, request: dataRequestWithIds};
     let prom = this.transportRequestManager.addRequest(r, timeout);
     const notifications = getNotifications(r);
-    console.log('about to send data', r)
     try {
       this.extensionPort?.postMessage({
         type: 'caip-x',
