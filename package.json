@@ -1,7 +1,7 @@
 {
   "name": "@metamask/openrpc-inspector-transport",
   "version": "0.0.0-development",
-  "homepage": "https://metamask.github.io/openrpc-inspector-transport",
+  "homepage": "https://shanejonas.github.io/openrpc-inspector-transport-multichain",
   "description": "",
   "main": "build/index.js",
   "scripts": {
