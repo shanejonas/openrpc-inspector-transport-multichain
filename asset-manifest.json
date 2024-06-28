@@ -1,8 +1,8 @@
 {
   "files": {
-    "main.js": "/openrpc-inspector-transport/static/js/main.a80824f2.js",
-    "index.html": "/openrpc-inspector-transport/index.html",
-    "main.a80824f2.js.map": "/openrpc-inspector-transport/static/js/main.a80824f2.js.map"
+    "main.js": "/openrpc-inspector-transport-multichain/static/js/main.a80824f2.js",
+    "index.html": "/openrpc-inspector-transport-multichain/index.html",
+    "main.a80824f2.js.map": "/openrpc-inspector-transport-multichain/static/js/main.a80824f2.js.map"
   },
   "entrypoints": [
     "static/js/main.a80824f2.js"
