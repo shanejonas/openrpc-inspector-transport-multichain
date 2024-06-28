@@ -1,57 +1,55 @@
 import { Transport } from "@open-rpc/client-js/build/transports/Transport";
 import { EventEmitter } from "events";
-import { JSONRPCRequestData, IJSONRPCData } from "@open-rpc/client-js/build/Request";
+import { JSONRPCRequestData, IJSONRPCData, getBatchRequests, getNotifications } from "@open-rpc/client-js/build/Request";
+import { JSONRPCError } from "@open-rpc/client-js";
+import { ERR_UNKNOWN } from "@open-rpc/client-js/build/Error";
 
-interface RequestArguments {
-  readonly method: string;
-  readonly params?: readonly unknown[] | object;
-}
-
-interface EthereumProvider extends EventEmitter {
-  isMetaMask?: boolean;
-  request: (args: RequestArguments) => Promise<unknown>;
-}
 
 declare global {
-  interface Window {
-    ethereum?: EthereumProvider;
+  interface Chrome {
+    chrome?: any;
   }
 }
 
-interface ProviderMessage {
-  readonly type: string;
-  readonly data: unknown;
-}
-
+const EXTENSION_ID = 'nonfpcflonapegmnfeafnddgdniflbnk';
 class MetaMaskTransport extends Transport {
 
+  private extensionPort?: chrome.runtime.Port;
+
+  private onMessageListener(msg: any) {
+    const { data } = msg;
+    this.transportRequestManager.resolveResponse(data);
+  }
+
   public async connect(): Promise<boolean> {
-    const hasEthereum = window.ethereum && window.ethereum.isMetaMask;
-    if (hasEthereum) {
-      window.ethereum?.on("message", this.notificationHandler);
-      return Boolean(hasEthereum);
-    } else {
-      throw new Error("No MetaMask Connection");
-    }
+    this.extensionPort = chrome.runtime.connect(EXTENSION_ID)
+    this.extensionPort.onMessage.addListener(this.onMessageListener);
+    return true;
   }
 
   public async sendData(data: JSONRPCRequestData, timeout: number | undefined = 5000): Promise<any> {
-    const results = await window.ethereum?.request((data as IJSONRPCData).request);
-    return results;
+    let prom = this.transportRequestManager.addRequest(data, timeout);
+    const notifications = getNotifications(data);
+    try {
+      this.extensionPort?.postMessage({
+        type: 'caip-x',
+        data,
+      });
+      this.transportRequestManager.settlePendingRequest(notifications);
+    } catch (err) {
+      const jsonError = new JSONRPCError((err as any).message, ERR_UNKNOWN, err);
+
+      this.transportRequestManager.settlePendingRequest(notifications, jsonError);
+      this.transportRequestManager.settlePendingRequest(getBatchRequests(data), jsonError);
+
+      prom = Promise.reject(jsonError);
+    }
+
+    return prom;
   }
 
   public close(): void {
-    if (window.ethereum) {
-      window.ethereum.off("message", this.notificationHandler);
-    }
-  }
-
-  private notificationHandler = (message: ProviderMessage) => {
-    const m: any = message;
-    window.parent.postMessage({
-      method: m.type,
-      params: m.data,
-    }, "*");
+    this.extensionPort?.onMessage.removeListener(this.onMessageListener);
   }
 }
 

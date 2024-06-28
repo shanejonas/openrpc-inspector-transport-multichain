@@ -15,6 +15,7 @@
   "license": "Apache-2.0",
   "devDependencies": {
     "@open-rpc/typings": "^1.9.0",
+    "@types/chrome": "^0.0.268",
     "@types/jest": "^24.0.13",
     "@types/react-dom": "^16.8.4",
     "jest": "^24.9.0",
