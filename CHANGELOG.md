@@ -1,3 +1,24 @@
+# 1.0.0 (2024-06-28)
+
+
+### Bug Fixes
+
+* also fix node version ([8763844](https://github.com/shanejonas/openrpc-inspector-transport-multichain/commit/876384422bc1100dad7f36da0d314c1b6527fc75))
+* linting ([750daa1](https://github.com/shanejonas/openrpc-inspector-transport-multichain/commit/750daa18d9043d18631d8b35ee28efdc2044c1f5))
+* node version ([2d47ce9](https://github.com/shanejonas/openrpc-inspector-transport-multichain/commit/2d47ce909f3a192c23093d0d27a2442c6d59c7b6))
+* node version again ([1f542a0](https://github.com/shanejonas/openrpc-inspector-transport-multichain/commit/1f542a0233ac2488a184da9198c27a9fc0f612fd))
+* remove console logs ([b12d3e4](https://github.com/shanejonas/openrpc-inspector-transport-multichain/commit/b12d3e4eb2398f5a10d937e91a4dda6aaba2a530))
+* remove dep cache ([4b3e7cb](https://github.com/shanejonas/openrpc-inspector-transport-multichain/commit/4b3e7cbf07e30ce202169fe23445a46a97a19c87))
+* use ethereum.isMetamask for connect ([d8681e5](https://github.com/shanejonas/openrpc-inspector-transport-multichain/commit/d8681e5b4056b615d00e967e45f3f9f93e5aafb7))
+* use transport connect ([f6c071d](https://github.com/shanejonas/openrpc-inspector-transport-multichain/commit/f6c071d8a2ff9281864b73818fe5b3f49ec15b9c))
+* use url as extension id ([4bfe9e6](https://github.com/shanejonas/openrpc-inspector-transport-multichain/commit/4bfe9e6d39bd87aac175228355d4dd58fc42bd7c))
+* whitespace ([59ee691](https://github.com/shanejonas/openrpc-inspector-transport-multichain/commit/59ee69122e380a3ad7ff0c15bbdd01e736ecaaad))
+
+
+### Features
+
+* Initial Commit ([969fe37](https://github.com/shanejonas/openrpc-inspector-transport-multichain/commit/969fe3718b0ef335a6bb8e839a14a944457aa570))
+
 ## [1.0.2](https://github.com/MetaMask/openrpc-inspector-transport/compare/1.0.1...1.0.2) (2022-03-09)
 
 
