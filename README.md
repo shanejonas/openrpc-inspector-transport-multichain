@@ -1,6 +1,6 @@
 # Metamask OpenRPC Inspector Transport
 
-This adds Metamask support to the [OpenRPC inspector](http://inspector.open-rpc.org) via transport plugins.
+This adds Metamask Mulitchain API support to the [OpenRPC inspector](http://inspector.open-rpc.org) via transport plugins.
 
 ## Install Instructions
 
@@ -8,7 +8,7 @@ This adds Metamask support to the [OpenRPC inspector](http://inspector.open-rpc.
 2. Click `HTTP` transport dropdown
 3. Select `+ Add Transport`
 4. Add plugin name: `Metamask`
-5. Add plugin url: `https://metamask.github.io/openrpc-inspector-transport`
+5. Add plugin url: `https://metamask.github.io/openrpc-inspector-transport-multichain`
 6. Select `POSTMESSAGEIFRAME` as the transport type
 7. Click `Add Transport`
 

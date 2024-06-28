@@ -1,57 +1,64 @@
 import { Transport } from "@open-rpc/client-js/build/transports/Transport";
-import { EventEmitter } from "events";
-import { JSONRPCRequestData, IJSONRPCData } from "@open-rpc/client-js/build/Request";
-
-interface RequestArguments {
-  readonly method: string;
-  readonly params?: readonly unknown[] | object;
-}
-
-interface EthereumProvider extends EventEmitter {
-  isMetaMask?: boolean;
-  request: (args: RequestArguments) => Promise<unknown>;
-}
-
-declare global {
-  interface Window {
-    ethereum?: EthereumProvider;
-  }
-}
-
-interface ProviderMessage {
-  readonly type: string;
-  readonly data: unknown;
-}
+import { IJSONRPCData, JSONRPCRequestData, getBatchRequests, getNotifications } from "@open-rpc/client-js/build/Request";
+import { JSONRPCError } from "@open-rpc/client-js";
+import { ERR_UNKNOWN } from "@open-rpc/client-js/build/Error";
 
 class MetaMaskTransport extends Transport {
 
+  private extensionPort?: chrome.runtime.Port;
+  private url?: string;
+
+  private onMessageListener(msg: any) {
+    const { data } = msg;
+    this.transportRequestManager.resolveResponse(JSON.stringify(data));
+  }
+
+  public async _connect(url: string): Promise<boolean> {
+    this.url = url;
+    return this.connect();
+  }
+
   public async connect(): Promise<boolean> {
-    const hasEthereum = window.ethereum && window.ethereum.isMetaMask;
-    if (hasEthereum) {
-      window.ethereum?.on("message", this.notificationHandler);
-      return Boolean(hasEthereum);
-    } else {
-      throw new Error("No MetaMask Connection");
-    }
+    this.extensionPort = this.extensionPort || chrome.runtime.connect(this.url!);
+    this.extensionPort.onDisconnect.addListener(() => {
+      this.extensionPort?.onMessage.removeListener(this.onMessageListener.bind(this));
+      this.extensionPort = undefined;
+    });
+    this.extensionPort.onMessage.addListener(this.onMessageListener.bind(this));
+    return true;
   }
 
   public async sendData(data: JSONRPCRequestData, timeout: number | undefined = 5000): Promise<any> {
-    const results = await window.ethereum?.request((data as IJSONRPCData).request);
-    return results;
+    if (Array.isArray(data)) {
+      throw new Error('Batch requests not supported yet');
+    }
+    const dataRequestWithIds = {
+      ...(data as IJSONRPCData).request,
+      id: (data as IJSONRPCData).internalID,
+    }
+    const r = {...data, request: dataRequestWithIds};
+    let prom = this.transportRequestManager.addRequest(r, timeout);
+    const notifications = getNotifications(r);
+    try {
+      this.extensionPort?.postMessage({
+        type: 'caip-x',
+        data: dataRequestWithIds,
+      });
+      this.transportRequestManager.settlePendingRequest(notifications);
+    } catch (err) {
+      const jsonError = new JSONRPCError((err as any).message, ERR_UNKNOWN, err);
+
+      this.transportRequestManager.settlePendingRequest(notifications, jsonError);
+      this.transportRequestManager.settlePendingRequest(getBatchRequests(r), jsonError);
+
+      prom = Promise.reject(jsonError);
+    }
+
+    return prom;
   }
 
   public close(): void {
-    if (window.ethereum) {
-      window.ethereum.off("message", this.notificationHandler);
-    }
-  }
-
-  private notificationHandler = (message: ProviderMessage) => {
-    const m: any = message;
-    window.parent.postMessage({
-      method: m.type,
-      params: m.data,
-    }, "*");
+    this.extensionPort?.onMessage.removeListener(this.onMessageListener);
   }
 }
 
