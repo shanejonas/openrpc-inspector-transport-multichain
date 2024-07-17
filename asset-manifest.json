@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.js": "/openrpc-inspector-transport-multichain/static/js/main.a80824f2.js",
+    "main.js": "/openrpc-inspector-transport-multichain/static/js/main.47c20101.js",
     "index.html": "/openrpc-inspector-transport-multichain/index.html",
-    "main.a80824f2.js.map": "/openrpc-inspector-transport-multichain/static/js/main.a80824f2.js.map"
+    "main.47c20101.js.map": "/openrpc-inspector-transport-multichain/static/js/main.47c20101.js.map"
   },
   "entrypoints": [
-    "static/js/main.a80824f2.js"
+    "static/js/main.47c20101.js"
   ]
 }
