@@ -2,7 +2,7 @@
   "name": "@metamask/openrpc-inspector-transport",
   "version": "0.0.0-development",
   "homepage": "https://shanejonas.github.io/openrpc-inspector-transport-multichain",
-  "description": " ",
+  "description": "",
   "main": "build/index.js",
   "scripts": {
     "start": "npm run typings && react-scripts start",

@@ -8,6 +8,7 @@ import {
 import { JSONRPCError } from "@open-rpc/client-js";
 import { ERR_UNKNOWN } from "@open-rpc/client-js/build/Error";
 
+
 class MetaMaskTransport extends Transport {
   private extensionPort?: chrome.runtime.Port;
   private url?: string;
@@ -78,6 +79,10 @@ class MetaMaskTransport extends Transport {
 
   private onMessageListener(msg: any) {
     const { data } = msg;
+    if (!data.id) {
+      // its a notification
+      window.parent.postMessage(data, "*");
+    }
     this.transportRequestManager.resolveResponse(JSON.stringify(data));
   }
 }
